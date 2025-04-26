@@ -12,11 +12,9 @@ const gameBoard = (function () {
 
     const getBoard = () => board
 
-    const fillCell = (row, column, choice) => {
-        if (["X", "O"].includes(board[row][column].getSquare())) {
-            return
-        } else {
-            board[row][column].fillSquare(choice)
+    const fillCell = (row, column, mark) => {
+        if (board[row][column].getSquare() === "") {
+            board[row][column].fillSquare(mark)
         }
     }
 
@@ -29,17 +27,17 @@ const gameBoard = (function () {
 })();
 
 function cell() {
-    let value = 0
+    let value = ""
 
-    const fillSquare = (choice) => value = choice
+    const fillSquare = (mark) => value = mark
 
     const getSquare = () => value
 
     return {fillSquare, getSquare}
 }
  
-function createPlayer(name, choice) {
-    return {name, choice}
+function createPlayer(name, mark) {
+    return {name, mark}
 }
 
 function gameFlow() {
@@ -61,10 +59,67 @@ function gameFlow() {
         console.log(`${getActivePlayer().name}'s turn.`)
     }
 
+    let moveCount = 0
+
     const playRound = (row, column) => {
-        gameBoard.fillCell(row, column, getActivePlayer().choice)
-        switchPlayerTurn()
-        printNewRound()
+        gameBoard.fillCell(row, column, getActivePlayer().mark)
+
+        moveCount++;
+
+        const board = gameBoard.getBoard()
+
+        function checkRow() {
+            for (let i = 0; i < 3; i++) {
+                if (board[row][i].getSquare() !== getActivePlayer().mark) {
+                    break
+                } else if (i === 2) {
+                    return true
+                }
+            }            
+        }
+
+        function checkColumn() {
+            for (let i = 0; i < 3; i++) {
+                if (board[i][column].getSquare() !== getActivePlayer().mark) {
+                    break
+                } else if (i === 2) {
+                    return true
+                }
+            }            
+        }
+
+        function checkDiag() {
+            if (row === column) {
+                for (let i = 0; i < 3; i++) {
+                    if (board[i][i].getSquare() !== getActivePlayer().mark) {
+                        break
+                    } else if (i === 2) {
+                        return true
+                    }
+                }
+            }            
+        }
+
+        function checkAntiDiag() {
+            if (row + column === 2) {
+                for (let i = 0; i < 3; i++) {
+                    if (board[i][2 - i].getSquare() !== getActivePlayer().mark) {
+                        break
+                    } else if (i === 2) {
+                        return true
+                    }
+                }
+            }            
+        }
+
+        if ((checkRow() || checkColumn() || checkDiag() || checkAntiDiag()) === true) {
+            console.log(`Game over! ${getActivePlayer().name} wins!`)
+        } else if (moveCount === 9) {
+            console.log("Game over! It's a tie!")
+        } else {
+            switchPlayerTurn()
+            printNewRound()
+        }
     }
 
     printNewRound()
