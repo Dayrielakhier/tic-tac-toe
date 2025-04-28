@@ -13,9 +13,7 @@ const gameBoard = (function () {
     const getBoard = () => board
 
     const fillCell = (row, column, mark) => {
-        if (board[row][column].getSquare() === "") {
             board[row][column].fillSquare(mark)
-        }
     }
 
     const printBoard = () => {
@@ -62,11 +60,14 @@ function gameFlow() {
     let moveCount = 0
 
     const playRound = (row, column) => {
+        const board = gameBoard.getBoard()
+
+        if (["X", "O"].includes(board[row][column].getSquare())) {
+            return
+        }
         gameBoard.fillCell(row, column, getActivePlayer().mark)
 
         moveCount++;
-
-        const board = gameBoard.getBoard()
 
         function checkRow() {
             for (let i = 0; i < 3; i++) {
@@ -124,7 +125,42 @@ function gameFlow() {
 
     printNewRound()
 
-    return {playRound}
+    return {playRound, getActivePlayer}
 }
 
-const game = gameFlow()
+function displayController() {
+    const game = gameFlow()
+    const turnDiv = document.querySelector(".turn")
+    const boardDiv = document.querySelector(".board")
+
+    function updateScreen() {
+        boardDiv.textContent = ""
+
+        const activePlayer = game.getActivePlayer()
+        const board = gameBoard.getBoard()
+        turnDiv.textContent = `${activePlayer.name}'s turn.`
+        
+        board.forEach((row, rowIndex) => {
+            row.forEach((square, columnIndex) => {
+                const tile = document.createElement("button")
+                tile.textContent = square.getSquare()
+                tile.dataset.row = rowIndex
+                tile.dataset.col = columnIndex
+                boardDiv.appendChild(tile)
+            })
+        })
+    }
+
+    function clickHandler(e) {
+        const row = e.target.dataset.row
+        const col = e.target.dataset.col
+
+        game.playRound(row, col)
+        updateScreen()
+    }
+    boardDiv.addEventListener("click", clickHandler)
+
+    updateScreen()
+}
+
+displayController()
