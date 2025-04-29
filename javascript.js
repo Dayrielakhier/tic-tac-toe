@@ -33,17 +33,22 @@ function cell() {
 
     return {fillSquare, getSquare}
 }
- 
+
+//const players = []
+
 function createPlayer(name, mark) {
     return {name, mark}
 }
+
+//function addPlayer(player) {
+//    players.push(player)
+//}
 
 function gameFlow() {
     const playerOne = createPlayer("P1", "X")
     const playerTwo = createPlayer("P2", "O")
 
     const players = [playerOne, playerTwo]
-
     let activePlayer = players[0]
 
     const switchPlayerTurn = () => {
@@ -144,6 +149,7 @@ function displayController() {
             row.forEach((square, columnIndex) => {
                 const tile = document.createElement("button")
                 tile.textContent = square.getSquare()
+                tile.classList.add("tile")
                 tile.dataset.row = rowIndex
                 tile.dataset.col = columnIndex
                 boardDiv.appendChild(tile)
@@ -159,6 +165,22 @@ function displayController() {
         updateScreen()
     }
     boardDiv.addEventListener("click", clickHandler)
+
+    const dialog = document.querySelector("dialog")
+    const form = document.querySelector("form")
+    const p1Name = document.querySelector("#p1-name")
+    const p2Name = document.querySelector("#p2-name")
+
+    //form.addEventListener("submit", (e) => {
+    //    e.preventDefault()
+    //    const playerOne = createPlayer(p1Name.value, "X")
+    //    addPlayer(playerOne)
+    //    const playerTwo = createPlayer(p2Name.value, "O")
+    //    addPlayer(playerTwo)
+    //    dialog.close()
+    //})
+
+    //dialog.showModal()
 
     updateScreen()
 }
