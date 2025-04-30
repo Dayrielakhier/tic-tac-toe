@@ -34,21 +34,18 @@ function cell() {
     return {fillSquare, getSquare}
 }
 
-//const players = []
-
-function createPlayer(name, mark) {
-    return {name, mark}
-}
-
-//function addPlayer(player) {
-//    players.push(player)
-//}
+const players = [
+    {
+        name: "P1",
+        mark: "X"
+    },
+    {
+        name: "P2",
+        mark: "O"
+    }
+]
 
 function gameFlow() {
-    const playerOne = createPlayer("P1", "X")
-    const playerTwo = createPlayer("P2", "O")
-
-    const players = [playerOne, playerTwo]
     let activePlayer = players[0]
 
     const switchPlayerTurn = () => {
@@ -133,7 +130,7 @@ function gameFlow() {
     return {playRound, getActivePlayer}
 }
 
-function displayController() {
+const displayController = (function () {
     const game = gameFlow()
     const turnDiv = document.querySelector(".turn")
     const boardDiv = document.querySelector(".board")
@@ -171,18 +168,14 @@ function displayController() {
     const p1Name = document.querySelector("#p1-name")
     const p2Name = document.querySelector("#p2-name")
 
-    //form.addEventListener("submit", (e) => {
-    //    e.preventDefault()
-    //    const playerOne = createPlayer(p1Name.value, "X")
-    //    addPlayer(playerOne)
-    //    const playerTwo = createPlayer(p2Name.value, "O")
-    //    addPlayer(playerTwo)
-    //    dialog.close()
-    //})
+    form.addEventListener("submit", (e) => {
+        e.preventDefault()
+        dialog.close()
+        players[0].name = p1Name.value
+        players[1].name = p2Name.value
+        updateScreen()
+    })
 
-    //dialog.showModal()
+    dialog.showModal()
 
-    updateScreen()
-}
-
-displayController()
+})()
