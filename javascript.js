@@ -60,13 +60,15 @@ function gameFlow() {
     }
 
     let moveCount = 0
+    let gameActive = true
 
     const playRound = (row, column) => {
         const board = gameBoard.getBoard()
 
-        if (["X", "O"].includes(board[row][column].getSquare())) {
+        if (["X", "O"].includes(board[row][column].getSquare()) || !gameActive) {
             return
         }
+        
         gameBoard.fillCell(row, column, getActivePlayer().mark)
 
         moveCount++;
@@ -116,9 +118,13 @@ function gameFlow() {
         }
 
         if ((checkRow() || checkColumn() || checkDiag() || checkAntiDiag()) === true) {
+            gameBoard.printBoard()
             console.log(`Game over! ${getActivePlayer().name} wins!`)
+            gameActive = false
         } else if (moveCount === 9) {
+            gameBoard.printBoard()
             console.log("Game over! It's a tie!")
+            gameActive = false
         } else {
             switchPlayerTurn()
             printNewRound()
@@ -132,7 +138,7 @@ function gameFlow() {
 
 const displayController = (function () {
     const game = gameFlow()
-    const turnDiv = document.querySelector(".turn")
+    const annDiv = document.querySelector(".ann")
     const boardDiv = document.querySelector(".board")
 
     function updateScreen() {
@@ -140,7 +146,7 @@ const displayController = (function () {
 
         const activePlayer = game.getActivePlayer()
         const board = gameBoard.getBoard()
-        turnDiv.textContent = `${activePlayer.name}'s turn.`
+        annDiv.textContent = `${activePlayer.name}'s turn.`
         
         board.forEach((row, rowIndex) => {
             row.forEach((square, columnIndex) => {
