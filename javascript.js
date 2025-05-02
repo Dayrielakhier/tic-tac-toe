@@ -121,10 +121,12 @@ function gameFlow() {
             gameBoard.printBoard()
             console.log(`Game over! ${getActivePlayer().name} wins!`)
             gameActive = false
+            return "win"
         } else if (moveCount === 9) {
             gameBoard.printBoard()
             console.log("Game over! It's a tie!")
             gameActive = false
+            return "tie"
         } else {
             switchPlayerTurn()
             printNewRound()
@@ -141,12 +143,20 @@ const displayController = (function () {
     const annDiv = document.querySelector(".ann")
     const boardDiv = document.querySelector(".board")
 
-    function updateScreen() {
+    function updateScreen(result) {
         boardDiv.textContent = ""
 
         const activePlayer = game.getActivePlayer()
         const board = gameBoard.getBoard()
-        annDiv.textContent = `${activePlayer.name}'s turn.`
+
+        if (result === "win") {
+            annDiv.textContent = `Game over! ${activePlayer.name} wins!`
+        } else if (result === "tie") {
+            annDiv.textContent = "Game over! It's a tie!"
+        } else {
+            annDiv.textContent = `${activePlayer.name}'s turn.`
+        }
+    
         
         board.forEach((row, rowIndex) => {
             row.forEach((square, columnIndex) => {
@@ -164,8 +174,8 @@ const displayController = (function () {
         const row = e.target.dataset.row
         const col = e.target.dataset.col
 
-        game.playRound(row, col)
-        updateScreen()
+        result = game.playRound(row, col)
+        updateScreen(result)
     }
     boardDiv.addEventListener("click", clickHandler)
 
@@ -179,7 +189,7 @@ const displayController = (function () {
         dialog.close()
         players[0].name = p1Name.value
         players[1].name = p2Name.value
-        updateScreen()
+        updateScreen(null)
     })
 
     dialog.showModal()
