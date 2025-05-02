@@ -106,7 +106,7 @@ function gameFlow() {
         }
 
         function checkAntiDiag() {
-            if (row + column === 2) {
+            if (Number(row) + Number(column) === 2) {
                 for (let i = 0; i < 3; i++) {
                     if (board[i][2 - i].getSquare() !== getActivePlayer().mark) {
                         break
