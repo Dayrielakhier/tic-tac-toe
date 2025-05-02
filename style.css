@@ -1,0 +1,33 @@
+body {
+    text-align: center;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+}
+
+.turn {
+    font-size: 2rem;
+}
+
+.board {
+    display: grid;
+    grid-template-columns: repeat(3, 200px);
+    grid-template-rows: repeat(3, 200px);
+}
+
+.tile {
+    font-size: 3.5rem;
+}
+
+dialog {
+    margin-top: 1%;
+}
+
+form > div {
+    margin-bottom: 1rem;
+}
