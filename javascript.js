@@ -66,11 +66,11 @@ function gameFlow() {
 
     const playRound = (row, column) => {
         const board = gameBoard.getBoard()
-
+        
         if (["X", "O"].includes(board[row][column].getSquare()) || !gameState.gameActive) {
             return
         }
-        
+
         gameBoard.fillCell(row, column, getActivePlayer().mark)
 
         gameState.moveCount++;
@@ -158,7 +158,6 @@ const displayController = (function () {
         } else {
             annDiv.textContent = `${activePlayer.name}'s turn.`
         }
-    
         
         board.forEach((row, rowIndex) => {
             row.forEach((square, columnIndex) => {
@@ -178,6 +177,13 @@ const displayController = (function () {
 
         result = game.playRound(row, col)
         updateScreen(result)
+        
+        const buttons = boardDiv.querySelectorAll("button")
+        if (result === "win" || result === "tie") {
+            buttons.forEach(button => {
+                button.disabled = true
+            })
+        }
     }
     boardDiv.addEventListener("click", clickHandler)
 
