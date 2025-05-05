@@ -45,6 +45,11 @@ const players = [
     }
 ]
 
+const gameState = {
+    gameActive: true,
+    moveCount: 0
+}
+
 function gameFlow() {
     let activePlayer = players[0]
 
@@ -59,19 +64,16 @@ function gameFlow() {
         console.log(`${getActivePlayer().name}'s turn.`)
     }
 
-    let moveCount = 0
-    let gameActive = true
-
     const playRound = (row, column) => {
         const board = gameBoard.getBoard()
 
-        if (["X", "O"].includes(board[row][column].getSquare()) || !gameActive) {
+        if (["X", "O"].includes(board[row][column].getSquare()) || !gameState.gameActive) {
             return
         }
         
         gameBoard.fillCell(row, column, getActivePlayer().mark)
 
-        moveCount++;
+        gameState.moveCount++;
 
         function checkRow() {
             for (let i = 0; i < 3; i++) {
@@ -120,12 +122,12 @@ function gameFlow() {
         if ((checkRow() || checkColumn() || checkDiag() || checkAntiDiag()) === true) {
             gameBoard.printBoard()
             console.log(`Game over! ${getActivePlayer().name} wins!`)
-            gameActive = false
+            gameState.gameActive = false
             return "win"
-        } else if (moveCount === 9) {
+        } else if (gameState.moveCount === 9) {
             gameBoard.printBoard()
             console.log("Game over! It's a tie!")
-            gameActive = false
+            gameState.gameActive = false
             return "tie"
         } else {
             switchPlayerTurn()
@@ -181,16 +183,30 @@ const displayController = (function () {
 
     const dialog = document.querySelector("dialog")
     const form = document.querySelector("form")
+    const restart = document.querySelector(".restart")
     const p1Name = document.querySelector("#p1-name")
     const p2Name = document.querySelector("#p2-name")
 
     form.addEventListener("submit", (e) => {
         e.preventDefault()
         dialog.close()
+        restart.removeAttribute("hidden")
         players[0].name = p1Name.value
         players[1].name = p2Name.value
         updateScreen(null)
     })
+
+    function reset() {
+        for (let i = 0; i < 3; i++) {
+            for (let j = 0; j < 3; j++) {
+                gameBoard.fillCell(i, j, "")
+            }
+        }
+        updateScreen(null)
+        gameState.gameActive = true
+        gameState.moveCount = 0
+    }
+    restart.addEventListener("click", reset)
 
     dialog.showModal()
 
